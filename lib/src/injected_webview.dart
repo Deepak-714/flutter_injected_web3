@@ -518,7 +518,7 @@ class _InjectedWebviewState extends State<InjectedWebview> {
     String initJs = reInit
         ? _loadReInt(widget.chainId, widget.rpc, address)
         : _loadInitJs(widget.chainId, widget.rpc);
-    debugPrint("RPC: [${widget.rpc}");
+    debugPrint("RPC: [${widget.rpc}. printiy");
     await controller.evaluateJavascript(source: initJs);
     if (!await controller.hasJavaScriptHandler(handlerName: "OrangeHandler")) {
       controller.addJavaScriptHandler(
