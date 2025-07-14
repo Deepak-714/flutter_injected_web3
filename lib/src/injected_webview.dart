@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 // ignore: must_be_immutable
-class InjectedWebview extends StatefulWidget implements WebView {
+class InjectedWebview extends StatefulWidget {
   /// `gestureRecognizers` specifies which gestures should be consumed by the WebView.
   /// It is possible for other gesture recognizers to be competing with the web view on pointer
   /// events, e.g if the web view is inside a [ListView] the [ListView] will want to handle
@@ -37,7 +37,7 @@ class InjectedWebview extends StatefulWidget implements WebView {
     this.initialOptions,
     this.initialUserScripts,
     this.pullToRefreshController,
-    this.implementation = WebViewImplementation.NATIVE,
+   // this.implementation = WebViewImplementation.NATIVE,
     this.contextMenu,
     this.onWebViewCreated,
     this.onLoadStart,
@@ -108,7 +108,7 @@ class InjectedWebview extends StatefulWidget implements WebView {
 
   @override
   // ignore: library_private_types_in_public_api
-  _InjectedWebviewState createState() => _InjectedWebviewState();
+  //_InjectedWebviewState createState() => _InjectedWebviewState();
 
   @override
   final void Function(InAppWebViewController controller)?
@@ -143,8 +143,8 @@ class InjectedWebview extends StatefulWidget implements WebView {
   @override
   final URLRequest? initialUrlRequest;
 
-  @override
-  final WebViewImplementation implementation;
+  // @override
+  // final PlatformInAppWebViewWidget implementation;
 
   @override
   final UnmodifiableListView<UserScript>? initialUserScripts;
@@ -396,6 +396,17 @@ class InjectedWebview extends StatefulWidget implements WebView {
 
   final Future<String> Function(InAppWebViewController controller,
       JsAddEthereumChain data, int chainId)? addEthereumChain;
+      
+        @override
+        // TODO: implement platform
+        PlatformInAppWebViewWidget get platform => throw UnimplementedError();
+        
+        @override
+  _InjectedWebviewState createState() => _InjectedWebviewState();
+        
+          
+        
+        
 }
 
 class _InjectedWebviewState extends State<InjectedWebview> {
@@ -410,7 +421,8 @@ class _InjectedWebviewState extends State<InjectedWebview> {
       initialOptions: widget.initialOptions,
       initialUserScripts: widget.initialUserScripts,
       pullToRefreshController: widget.pullToRefreshController,
-      implementation: widget.implementation,
+      initialSettings: InAppWebViewSettings( isInspectable: kDebugMode,),
+   //   implementation: widget.implementation,'
       contextMenu: widget.contextMenu,
       onWebViewCreated: widget.onWebViewCreated,
       onLoadStart: (controller, uri) async {
@@ -506,9 +518,9 @@ class _InjectedWebviewState extends State<InjectedWebview> {
     String initJs = reInit
         ? _loadReInt(widget.chainId, widget.rpc, address)
         : _loadInitJs(widget.chainId, widget.rpc);
-    debugPrint("RPC: ${widget.rpc}");
+    debugPrint("RPC: [${widget.rpc}");
     await controller.evaluateJavascript(source: initJs);
-    if (controller.javaScriptHandlersMap["OrangeHandler"] == null) {
+    if (!await controller.hasJavaScriptHandler(handlerName: "OrangeHandler")) {
       controller.addJavaScriptHandler(
           handlerName: "OrangeHandler",
           callback: (callback) async {
